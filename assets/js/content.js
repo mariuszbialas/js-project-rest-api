@@ -4,90 +4,137 @@ import { elements } from './index.js';
 import dom from './dom.js';
 
 const content = {
-
-  renderSelect(data){
-
-    // console.log(data);
-    const year = Object.keys(data).filter((key, index) => index < 3);
-    const month = Object.keys(data).filter((key, index) => index > 4);
-    // console.log(month);
-
-    const containerYear = dom.create({parent: elements.form});
-    dom.create({
-        parent: containerYear,
-        type: 'label',
-        content: 'Jahr: ',
-        attr: {'for': 'year'}
-    });
-    const formYear = dom.create({
-        parent: containerYear,
-        type: 'select',
-        attr: {'name': 'year', 'id': 'year'}
-    });
-    year.forEach(key => {
-        dom.create({
-            parent: formYear,
-            type: 'option',
-            content: key,
-            attr: {'value': key}
-        });
-    })
-
-    const containerMonth = dom.create({parent: elements.form});
-    dom.create({
-        parent: containerMonth,
-        type: 'label',
-        content: 'Monat: ',
-        attr: {'for': 'month'}
-    });
-    const formMonth = dom.create({
-        parent: containerMonth,
-        type: 'select',
-        attr: {'name': 'month', 'id': 'month'}
-    });
-    month.forEach(key => {
-        dom.create({
-            parent: formMonth,
-            type: 'option',
-            content: key,
-            attr: {'value': key}
-        });
-    })
+  handleClick(e, data) {
+    e.preventDefault();
+    if (data['Januar']) {
+      const select = dom.sel('#month');
+      const value = select.options[select.selectedIndex].value;
+      this.showMonth({ month: value, ...data[value] });
+    } else {
+      console.log(dom.sel('#year'));
+    }
   },
+
+  renderSelect(data) {
+    const name = data['Januar'] ? 'month' : 'year';
+
+    const container = dom.create({ parent: elements.form });
+    const form = dom.create({
+      parent: container,
+      type: 'form',
+      attr: { id: data['Januar'] ? 'formMonthSelect' : 'formYearSelect' },
+    });
+    dom.create({
+      parent: form,
+      type: 'label',
+      content: name + ': ',
+      attr: { for: name },
+    });
+    const select = dom.create({
+      parent: form,
+      type: 'select',
+      attr: {
+        name: name,
+        id: name,
+      },
+    });
+    Object.keys(data).forEach((key) => {
+      dom.create({
+        parent: select,
+        type: 'option',
+        content: key == 'maerz' ? 'märz' : key,
+        attr: { value: key },
+      });
+    });
+    dom.create({
+      parent: form,
+      type: 'button',
+      content: 'show data',
+      attr: { type: 'submit' },
+      listeners: { click: (event) => content.handleClick(event, data) },
+    });
+  },
+
   showMonth(data) {
+    elements.calendar.innerHTML = '';
     const container = dom.create({ parent: elements.calendar });
 
-    Object.entries(data).forEach((item) => {
-      dom.create({
-        parent: container,
-        type: 'h4',
-        content: item[0],
-      });
-
-      const info = dom.create({ parent: container });
-
-      item[1].forEach((el) => {
-
+    Object.entries(data).forEach((item, index) => {
+      if (index === 0) {
         dom.create({
-          parent: info,
-          type: 'p',
-          content: el,
+          parent: container,
+          type: 'h3',
+          content: item[0] + ': ' + item[1],
         });
-      });
+      } else {
+        const div = dom.create({ parent: container, classes: ['container'] });
+        dom.create({
+          parent: div,
+          type: 'p',
+          content: item[0] + ': ',
+          attr: { id: item[0] },
+        });
+        
+        item[1].forEach((el, index) => {
+          if (item[1].length !== 0) {
+            const box = dom.create({ parent: div });
+            dom.create({
+              parent: box,
+              type: 'label',
+              content: 'Name: ',
+              attr: { for: `name-${index}-${item[0]}` }
+            });
+            dom.create({
+              parent: box,
+              type: 'input',
+              attr: { 'value': el.name, id: `name-${index}-${item[0]}` },
+            });
+            dom.create({
+              parent: box,
+              type: 'label',
+              content: 'Date: ',
+              attr: { for: `date-${index}-${item[0]}` }
+            });
+            dom.create({
+              parent: box,
+              type: 'input',
+              attr: { 'value': el.date, id: `date-${index}-${item[0]}` },
+            });
+            dom.create({
+              parent: box,
+              type: 'button',
+              content: 'update',
+              listeners: {'click': () => dom.sel(`#info-${index}-${item[0]}`).innerText = 'es wurde nicht geändert!'}
+            });
+            dom.create({
+              parent: box,
+              type: 'span',
+              attr: { 'id': `info-${index}-${item[0]}`},
+              classes: ['info']
+            });
+          }
+        });
+        dom.create({
+          parent: div,
+          type: 'button',
+          content: 'add new'
+        });
+      }
     });
   },
-  showYear(data) {
-    const container = dom.create({ parent: elements.calendar });
 
-    Object.entries(data).forEach((item) => {
+  //   showYear(data) {
+  //     const container = dom.create({ parent: elements.calendar });
 
-      dom.create({
-        parent: container,
-        type: 'h4',
-        content: item[1].name,
-      });
-    });
-  },
+  //     Object.entries(data).forEach((item) => {
+
+  //       dom.create({
+  //         parent: container,
+  //         type: 'h4',
+  //         content: item[1].name,
+  //       });
+  //     });
+  //   },
 };
 
 export default content;

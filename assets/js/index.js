@@ -10,14 +10,12 @@ export const elements = {};
 // FUNKTIONEN
 const domMapping = () => {
   elements.calendar = dom.sel('.calendar');
-  elements.form = dom.sel('#formFetchData');
+  elements.form = dom.sel('.form');
 };
 
 const fetchData = () => {
-    ajax.fetchData('juni').then(content.showMonth);
-    ajax.fetchData('2023').then(content.showYear);
-    ajax.fetchData().then(content.renderSelect);
-
+    ajax.fetchData('months').then(content.renderSelect);
+    ajax.fetchData('years').then(content.renderSelect);
 };
 
 const appendEventlisteners = () => {};
