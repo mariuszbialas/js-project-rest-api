@@ -41,13 +41,28 @@ router.get('/', (req, res) => {
 });
 
 // Monate Routers
+router.get('/months/:month/:name', (req, res) => {
+  let month = req.params.month;
+  let name = req.params.name;
+  // Monatsname in Großschreibung umwandeln 
+  month = month.charAt(0).toUpperCase() + month.slice(1);
+  fetchData().then((data) => {
+      if (data.months[month][name])
+      res.status(200).json({ month: month, ...data.months[month][name] });
+      else
+        res.status(404).send({
+          error: 'ungültiger Pfad',
+          path: `.../api/months/${month}/${name}: nicht gefunden!`,
+        });
+    })
+    .catch(console.warn);
+});
 router.get('/months/:month', (req, res) => {
   let month = req.params.month;
+  // Monatsname in Großschreibung umwandeln 
   month = month.charAt(0).toUpperCase() + month.slice(1);
-  const data = fetchData();
-  data
-    .then((data) => {
-      if (data.months[month])
+  fetchData().then(data => {
+      if (data.months[month]) 
         res.status(200).json({ month: month, ...data.months[month] });
       else
         res.status(404).send({
@@ -58,16 +73,13 @@ router.get('/months/:month', (req, res) => {
     .catch(console.warn);
 });
 router.get('/months', (req, res) => {
-  const data = fetchData();
-  data.then((data) => res.status(200).json(data.months)).catch(console.warn);
+  const data = fetchData().then((data) => res.status(200).json(data.months)).catch(console.warn);
 });
 
 // Jahr Routers
 router.get('/years/:year', (req, res) => {
   let year = req.params.year;
-  const data = fetchData();
-  data
-    .then((data) => {
+  const data = fetchData().then((data) => {
       if (data.years[year])
         res.status(200).json({ year: year, ...data.years[year] });
       else
@@ -79,8 +91,7 @@ router.get('/years/:year', (req, res) => {
     .catch(console.warn);
 });
 router.get('/years', (req, res) => {
-  const data = fetchData();
-  data.then((data) => res.status(200).json(data.years)).catch(console.warn);
+  fetchData().then((data) => res.status(200).json(data.years)).catch(console.warn);
 });
 
 // Not gültiger Pfad

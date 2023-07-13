@@ -11,7 +11,9 @@ const content = {
       const value = select.options[select.selectedIndex].value;
       this.showMonth({ month: value, ...data[value] });
     } else {
-      console.log(dom.sel('#year'));
+      const select = dom.sel('#year');
+      const value = select.options[select.selectedIndex].value;
+      this.showYear({ year: value, ...data[value] });
     }
   },
 
@@ -74,7 +76,7 @@ const content = {
           content: item[0] + ': ',
           attr: { id: item[0] },
         });
-        
+
         item[1].forEach((el, index) => {
           if (item[1].length !== 0) {
             const box = dom.create({ parent: div });
@@ -82,59 +84,128 @@ const content = {
               parent: box,
               type: 'label',
               content: 'Name: ',
-              attr: { for: `name-${index}-${item[0]}` }
+              attr: { for: `name-${index}-${item[0]}` },
             });
             dom.create({
               parent: box,
               type: 'input',
-              attr: { 'value': el.name, id: `name-${index}-${item[0]}` },
+              attr: { value: el.name, id: `name-${index}-${item[0]}` },
             });
             dom.create({
               parent: box,
               type: 'label',
               content: 'Date: ',
-              attr: { for: `date-${index}-${item[0]}` }
+              attr: { for: `date-${index}-${item[0]}` },
             });
             dom.create({
               parent: box,
               type: 'input',
-              attr: { 'value': el.date, id: `date-${index}-${item[0]}` },
+              attr: { value: el.date, id: `date-${index}-${item[0]}` },
             });
             dom.create({
               parent: box,
               type: 'button',
               content: 'update',
-              listeners: {'click': () => dom.sel(`#info-${index}-${item[0]}`).innerText = 'es wurde nicht geändert!'}
+              listeners: {
+                click: () =>
+                  (dom.sel(`#info-${index}-${item[0]}`).innerText =
+                    'es wurde nicht geändert!'),
+              },
             });
             dom.create({
               parent: box,
               type: 'span',
-              attr: { 'id': `info-${index}-${item[0]}`},
-              classes: ['info']
+              attr: { id: `info-${index}-${item[0]}` },
+              classes: ['info'],
             });
           }
         });
         dom.create({
           parent: div,
           type: 'button',
-          content: 'add new'
+          content: 'add new',
         });
       }
     });
   },
 
-  //   showYear(data) {
-  //     const container = dom.create({ parent: elements.calendar });
+  showYear(data) {
+    elements.calendar.innerHTML = '';
+    const container = dom.create({ parent: elements.calendar });
+    const year = Object.entries(data);
 
-  //     Object.entries(data).forEach((item) => {
+    dom.create({
+      parent: container,
+      type: 'h3',
+      content: year[year.length - 1][0] + ': ' + year[year.length - 1][1],
+    });
 
-  //       dom.create({
-  //         parent: container,
-  //         type: 'h4',
-  //         content: item[1].name,
-  //       });
-  //     });
-  //   },
+    const div = dom.create({ parent: container, classes: ['container'] });
+    Object.entries(data).forEach((item, index) => {
+      const data = item[1];
+      if ( data.name ) {
+        const box = dom.create({ parent: div });
+        dom.create({
+          parent: box,
+          type: 'label',
+          content: 'Name: ',
+          attr: { for: `name-${index}-${data.month}-${data.date}` },
+        });
+        dom.create({
+          parent: box,
+          type: 'input',
+          attr: {
+            value: data.name,
+            id: `name-${index}-${data.month}-${data.date}`,
+          },
+        });
+        dom.create({
+          parent: box,
+          type: 'label',
+          content: 'Month: ',
+          attr: { for: `month-${index}-${data.month}-${data.date}` },
+        });
+        dom.create({
+          parent: box,
+          type: 'input',
+          attr: {
+            value: data.month,
+            id: `month-${index}-${data.month}-${data.date}`,
+          },
+        });
+        dom.create({
+          parent: box,
+          type: 'label',
+          content: 'Date: ',
+          attr: { for: `date-${index}-${data.month}-${data.date}` },
+        });
+        dom.create({
+          parent: box,
+          type: 'input',
+          attr: {
+            value: data.date,
+            id: `date-${index}-${data.month}-${data.date}`,
+          },
+        });
+        dom.create({
+          parent: box,
+          type: 'button',
+          content: 'update',
+          listeners: {
+            click: () =>
+              (dom.sel(`#info-${index}-${data.month}-${data.date}`).innerText =
+                'es wurde nicht geändert!'),
+          },
+        });
+        dom.create({
+          parent: box,
+          type: 'span',
+          attr: { id: `info-${index}-${data.month}-${data.date}` },
+          classes: ['info'],
+        });
+      }
+    });
+  },
 };
 
 export default content;
