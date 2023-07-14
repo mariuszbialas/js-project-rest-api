@@ -73,7 +73,8 @@ router.get('/months/:month', (req, res) => {
     .catch(console.warn);
 });
 router.get('/months', (req, res) => {
-  const data = fetchData().then((data) => res.status(200).json(data.months)).catch(console.warn);
+  const data = fetchData()
+    .then((data) => res.status(200).json(data.months)).catch(console.warn);
 });
 
 // Jahr Routers
@@ -91,7 +92,8 @@ router.get('/years/:year', (req, res) => {
     .catch(console.warn);
 });
 router.get('/years', (req, res) => {
-  fetchData().then((data) => res.status(200).json(data.years)).catch(console.warn);
+  fetchData()
+    .then((data) => res.status(200).json(data.years)).catch(console.warn);
 });
 
 // Not gültiger Pfad
