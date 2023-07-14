@@ -2,4 +2,4 @@
 
 Abschlussprojekt den 2.Teil JavaScript Kurs bei alfatraining.
 Das Projekt ist eine RESTful API in ExpresJS programmiert.
-Quelldatei: CouchDB.
+Datenquelle: CouchDB-Datenbank.
